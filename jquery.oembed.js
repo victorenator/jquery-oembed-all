@@ -177,6 +177,26 @@
           var oembedData = {code: externalUrl.replace(embedProvider.templateRegex,embedProvider.template)};
           success(oembedData, externalUrl,container);
         }
+        
+      }else{
+
+        var requestUrl = getRequestUrl(embedProvider, externalUrl), 		
+        ajaxopts = $.extend({
+          url: requestUrl,
+          dataType: 'jsonp',
+          success:  function (data) {
+            var oembedData = $.extend({}, data);
+            switch (oembedData.type) {
+              case "photo":
+                oembedData.code = $.fn.oembed.getPhotoCode(externalUrl, oembedData);
+                break;
+              case "video":
+              case "rich":
+                oembedData.code = $.fn.oembed.getRichCode(externalUrl, oembedData);
+                break;
+              default:
+                oembedData.code = $.fn.oembed.getGenericCode(externalUrl, oembedData);
+                break;
             }
             success(oembedData, externalUrl,container);
           },
